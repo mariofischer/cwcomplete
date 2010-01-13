@@ -4,7 +4,7 @@ CwComplete
 This is a small mootools automcompletion tool.
 ..
 
-![Screenshot](http://www.chipwreck.de/blog/wp-content/uploads/2009/10/cwcrop-screenshot.png)
+![Screenshot](http://www.chipwreck.de/blog/wp-content/uploads/2010/01/Demo-CwComplete.png)
 
 ### Demo
 
