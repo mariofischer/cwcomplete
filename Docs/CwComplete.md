@@ -89,7 +89,7 @@ CwAutocompleter Method: clearChoices {#CwAutocompleter:clearChoices}
 
 
 
-### Arguments:
+### Arguments:I
 
 1. obj - (**)
 
