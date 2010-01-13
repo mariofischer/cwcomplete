@@ -17,6 +17,7 @@ CwAutocompleter Method: constructor {#CwAutocompleter:constructor}
 
 - More information, live demo etc. here: [http://www.chipwreck.de/blog/software/cwcomplete/](http://www.chipwreck.de/blog/software/cwcomplete/) 
 
+
 ### Syntax:
 
 	var myCwAutocompleter = new CwAutocompleter(inputfield, url, options);
@@ -29,8 +30,6 @@ CwAutocompleter Method: constructor {#CwAutocompleter:constructor}
 
 ### Options:
 
-* inputfield - (**) for internal use
-* url - (**)  for internal use
 * ajaxMethod - (**) either get (default) or post
 * ajaxParam - (**) name of the parameter which is sent to the ajax script (defaults to 'search')
 * inputMinLength - (**) number of characters entered after which the auto complete starts
@@ -48,8 +47,6 @@ CwAutocompleter Method: constructor {#CwAutocompleter:constructor}
 ### Returns:
 
 * (*object*) A new *CwComplete* instance.
-
-
 
 
 
@@ -124,11 +121,6 @@ CwAutocompleter Method: moveUp {#CwAutocompleter:moveUp}
 1. el - (**)
 2. event - (**)
 
-### Returns:
-
-
-
-
 
 CwAutocompleter Method: moveDown {#CwAutocompleter:moveDown}
 -------------------------------------------------------------
@@ -142,47 +134,6 @@ CwAutocompleter Method: moveDown {#CwAutocompleter:moveDown}
 
 1. el - (**)
 2. event - (**)
-
-### Returns:
-
-
-
-
-
-CwAutocompleter Method: startLoading {#CwAutocompleter:startLoading}
----------------------------------------------------------------------
-
-
-### Syntax:
-
-
-
-
-CwAutocompleter Method: finishedLoading {#CwAutocompleter:finishedLoading}
----------------------------------------------------------------------------
-
-
-### Syntax:
-
-
-
-
-CwAutocompleter Method: unhighlightSelection {#CwAutocompleter:unhighlightSelection}
--------------------------------------------------------------------------------------
-
-
-### Syntax:
-
-
-
-
-CwAutocompleter Method: highlightSelection {#CwAutocompleter:highlightSelection}
----------------------------------------------------------------------------------
-
-
-### Syntax:
-
-
 
 
 CwAutocompleter Method: keypressed {#CwAutocompleter:keypressed}

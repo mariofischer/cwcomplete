@@ -15,17 +15,14 @@ provides:
   - CwComplete
   
 version:
-  0.3
+	0.3
 ...
 */
 var CwAutocompleter = new Class({
 
 	Implements: [Options,Events],
 	
-	options: {
-		inputfield: '', 
-		url: '',
-		
+	options: {		
 		ajaxMethod: 'get', // use get or post for the request?
 		ajaxParam: 'search', // name of parameter for the request (..url.php?search=..)
 		inputMinLength: 3, // number of characters at which the auto completion starts
@@ -41,69 +38,54 @@ var CwAutocompleter = new Class({
 		onChoose: $empty // function to execute if the user chose an item
 	},
 
-	// initialization
+	// initialization : css class of the input field, url for ajax query, options
 	initialize: function(inputfield, url, options)
 	{
-		Event.Keys.shift = 16;
-		Event.Keys.ctrl = 17;
-		Event.Keys.alt = 18;
-	
 		// prepare options
-		this.prevlength = 0;
 		this.setOptions(options);
-		this.options.inputfield = inputfield;
-		this.options.url = url;
-		this.textfield = $(this.options.inputfield);
+		if (!$(inputfield) || !url) { return; }
 		
-		if (!$(this.options.inputfield)) {
-			return;
-		}
+		this.prevlength = 0;
+		this.textfield = $(inputfield);
+		this.url = url;
 		
 		// build elements
 		var mywidth = this.textfield.getStyle('width');
 		var myleft = this.textfield.getPosition().x;
 		var mytop = this.textfield.getPosition().y + this.textfield.getSize().y;
-/* 		console.log(this.textfield.getPosition().x+","+this.textfield.getPosition().y+","+this.textfield.getSize().y); */
 
 		this.container = new Element('div', {
-				'class': this.options.suggestionBoxOuterClass,
-				'styles': {
-					'width': mywidth,
-					'left': myleft,
-					'top': mytop,
-					'height': 0
-				}
+			'class': this.options.suggestionBoxOuterClass,
+			'styles': { 'width': mywidth, 'left': myleft, 'top': mytop, 'height': 0 }
 		}).inject($(document.body));
 
 		this.choices = new Element('ul', {
-				id : this.options.suggestionBoxId,
-				'class': this.options.suggestionBoxListClass
+			'class': this.options.suggestionBoxListClass
 		}).inject($(this.container), 'inside');
-/* 		this.container.hide(); */
+		this.clearChoices();
 		
 		// attach events		
-		
 		this.textfield.setProperty('autocomplete', 'off');
-		this.textfield.addEvent('keydown', this.keypressed.bind(this));
-		this.textfield.addEvent('keyup', this.keypressed.bind(this));
+		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this) } );
 		
-		this.clearChoices();
-
 		// prepare ajax
 		this.ajax = new Request({
-			url: this.options.url,
+			url: this.url,
 			method: this.options.ajaxMethod});
 		this.ajax.addEvent('onComplete', this.ajaxComplete.bind(this));
 	},
 	
-	// Retrieve values, given the textfield input
+	// Retrieve values given the textfield input and show "loading..."
 	getValues: function(input)
 	{
-		this.startLoading();
+		this.choices.hide();
+		this.container.addClass(this.options.suggestionBoxLoadingClass);
+		this.container.show();
+		
 		this.ajax.send(this.options.ajaxParam+"="+input);
 	},
 	
-	// Ajax oncomplete, eval response and fill dropdown
+	// Ajax oncomplete, eval response and fill dropdown, remove "loading"-classes
 	ajaxComplete: function(input)
 	{
 		if (!input) return;
@@ -117,13 +99,16 @@ var CwAutocompleter = new Class({
 		 	this.clearChoices();
 			this.values.each( function(avalue, i) {
 				if (avalue) {
-					this.lielems[i] = new Element('li');
-					this.lielems[i].set('html', avalue[1]);
+					this.lielems[i] = new Element('li', { 'html': avalue[1] });
 					this.lielems[i].addEvent('click', this.enterValue.bindWithEvent(this, {id: avalue[0], value: avalue[1] }));
 					this.lielems[i].injectInside(this.choices);
 				}
 			}.bind(this));
-			this.finishedLoading();
+			
+			this.container.show();	
+			this.container.removeClass(this.options.suggestionBoxLoadingClass);
+			this.choices.show();
+			this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
 		}
 	},
 	
@@ -133,24 +118,20 @@ var CwAutocompleter = new Class({
 		this.lielems = [];
 		this.selected = 0;
 		this.choices.set('html', '');
-		this.container.hide( );
+		this.container.hide();
 	},
 	
-	// Enter value from selection into text-field
+	// Enter value from selection into text-field and fire onChoose-event
 	enterValue: function(obj, selected)
 	{
 		if ($(this.options.targetfieldForKey)) {
 			$(this.options.targetfieldForKey).value = selected['id'];
 		}
-		
 		if ($(this.options.targetfieldForValue)) {
 			$(this.options.targetfieldForValue).value = selected['value'];
-			if (this.options.inputfield != this.options.targetfieldForValue) {
-				$(this.options.inputfield).value = '';
-			}
 		}
 		else {
-			$(this.options.inputfield).value = selected['value'];
+			this.textfield.value = selected['value'];
 		}
 		
 		this.fireEvent('onChoose', {'key': selected['id'], 'value': selected['value']});
@@ -159,91 +140,63 @@ var CwAutocompleter = new Class({
 	
 	moveUp: function(el, event)
 	{
-		if (this.selected <= 0) return;
-		this.unhighlightSelection();
-		this.selected = this.selected - 1;
-		this.highlightSelection();
+		if (this.lielems[this.selected] && this.lielems[this.selected - 1]) {
+			this.lielems[this.selected].removeClass(this.options.suggestionBoxHoverClass);
+			this.selected = this.selected - 1;
+			this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
+		}		
 	},
 	
 	moveDown: function(el, event)
 	{
-		if (this.selected >= (this.lielems.length - 1)) return;
-		this.unhighlightSelection();
-		this.selected = this.selected + 1;
-		this.highlightSelection();
-	},
-	
-	startLoading: function()
-	{
-		this.choices.hide();
-		this.container.addClass(this.options.suggestionBoxLoadingClass);
-		this.container.show();		
-	},
-
-	finishedLoading: function()
-	{	
-		this.container.show();	
-		this.container.removeClass(this.options.suggestionBoxLoadingClass);
-		this.choices.show();
-		this.highlightSelection();
-	},
-
-	unhighlightSelection: function()
-	{
-		if (this.lielems[this.selected]) {
+		if (this.lielems[this.selected] && this.lielems[this.selected + 1]) {
 			this.lielems[this.selected].removeClass(this.options.suggestionBoxHoverClass);
-		}
-	},
-	
-	highlightSelection: function()
-	{
-		if (this.lielems[this.selected]) {
+			this.selected = this.selected + 1;
 			this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
 		}
 	},
-	
+
 	// Text field key handler
 	keypressed: function(event)
 	{
 		var myevent = new Event(event);
 		if (myevent.target.id === this.textfield.id) {
-		
 			if (myevent.type == 'keyup') {
-				if (myevent.key !== 'up' && myevent.key !== 'enter' && myevent.key !== 'down' && myevent.key !== 'left' && myevent.key !== 'right' && myevent.key !== 'esc') {
-					var text = myevent.target.value;
-					if (text.length != this.prevlength) {
-						if (text.length >= this.options.inputMinLength) {
-							this.prevlength = text.length;
-							this.getValues(text);
-						} else {
-							this.clearChoices();
+				switch (myevent.key) {
+					case 'enter':
+						if (this.lielems[this.selected]) {
+							this.lielems[this.selected].fireEvent('click');
 						}
 						event.preventDefault();
-					}
+						break;
+					case 'down':
+						this.moveDown();
+						event.preventDefault();
+						break;
+					case 'up':
+						this.moveUp();	
+						event.preventDefault();
+						break;
+					case 'esc':
+						this.clearChoices();
+						break;
+					default:
+						var text = myevent.target.value;
+						if (text.length != this.prevlength) { // text length has changed
+							if (text.length >= this.options.inputMinLength) { // ..and is long enough
+								this.prevlength = text.length;
+								this.getValues(text);
+							} else {
+								this.clearChoices();
+							}
+							event.preventDefault();
+						}
 				}
-				else if (myevent.key == 'enter') {
-					if (this.lielems[this.selected]) {
-						this.lielems[this.selected].fireEvent('click');
-					}
-					event.preventDefault();
-				}
-				else if (myevent.key == 'down') {
-					this.moveDown();
-					event.preventDefault();
-				}
-				else if (myevent.key == 'up') {
-					this.moveUp();	
-					event.preventDefault();
-				}
-				else if (myevent.key == 'esc') {
-					this.clearChoices();
-				}
-			} else if (myevent.key == 'up' || myevent.key == 'enter' || myevent.key == 'down' || myevent.key == 'esc') { 
+			} else if (myevent.key == 'enter' || myevent.key == 'esc') { // keydown disabled for those
 				event.preventDefault();
 			}
 			else {
-				var text = myevent.target.value;
-				this.prevlength = text.length;
+				this.prevlength = myevent.target.value.length; // any other keydown
 			}
 		}
 	}

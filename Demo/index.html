@@ -17,7 +17,7 @@
 var ac;
 window.addEvent("domready", function() {
 
-	ac1 = new CwAutocompleter( 'autoinput1' /* The ID of the input field */ , 'URL-GOES-HERE', /* The URL of your backend ajax script */
+	ac1 = new CwAutocompleter( 'autoinput1' /* The ID of the input field */ , 'http://www.chipwreck.de/cwcrop/ac-ajax.php', /* The URL of your backend ajax script */
 		{
 			targetfieldForKey: 'country_code1', /* The ID of the field where the selected key goes */
 			onChoose: function(selection) {
