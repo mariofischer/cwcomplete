@@ -2,7 +2,6 @@ CwComplete
 ===========
 
 This is a small mootools automcompletion tool.
-(In progress...)
 ..
 
 ![Screenshot](http://www.chipwreck.de/blog/wp-content/uploads/2010/01/Demo-CwComplete.png)
@@ -21,8 +20,7 @@ How to use
 
 * [MooTools Core 1.2.3](http://mootools.net/core)
 
-	
-### More Information
+### More Information / Help
 
 See [http://www.chipwreck.de/blog/software/cwcomplete/help/](http://www.chipwreck.de/blog/software/cwcomplete/) for more information.
 	

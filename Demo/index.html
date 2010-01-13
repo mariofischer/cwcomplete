@@ -17,23 +17,15 @@
 var ac;
 window.addEvent("domready", function() {
 
-	ac1 = new CwAutocompleter( 'autoinput1', 'http://www.chipwreck.de/cwcrop/ac-ajax.php',
+	ac1 = new CwAutocompleter( 'autoinput1' /* The ID of the input field */ , 'URL-GOES-HERE', /* The URL of your backend ajax script */
 		{
-			targetfieldForKey: 'country_code1',
+			targetfieldForKey: 'country_code1', /* The ID of the field where the selected key goes */
 			onChoose: function(selection) {
- 				alert("You selected: " + selection.value + " (" + selection.key + ")");
+ 				alert("You selected: " + selection.value + " (" + selection.key + ")");  /* Optional function to execute on user selection */
 			}
 		}
 	);
-	ac2 = new CwAutocompleter( 'autoinput2', 'http://www.chipwreck.de/cwcrop/ac-ajax.php',
-		{
-			targetfieldForKey: 'country_code2',
-			targetfieldForValue: 'country_sel2',
-			onChoose: function(selection) {
-				//console.log('done with ' + selection.key + ':' + selection.value);
-			}
-		}
-	);
+
 });
 
 </script>
@@ -42,25 +34,13 @@ window.addEvent("domready", function() {
 
 	<h1>CwComplete - Javascript Quick Autocompleter</h1>
 	<p>					
-		This is a small mootools autocompletion tool
+		This is a small mootools autocompletion tool.
 	</p>
 	<p> 
 		For more information: <a href="http://www.chipwreck.de/blog/software/cwcomplete/">Homepage/Documentation/Feedback &raquo;</a>
 	</p>
 	
-	<h4>Works..</h4>
-	<ul>
-		<li>..in Safari 3+, Firefox 3+, IE 6, IE 7, IE 8, Chrome and Opera 9+</li>
-		<li>Requires mootools 1.23+ and (for example) PHP to deliver a list of values</li>
-	</ul>
-	
-	<h4>Features..</h4>
-	<ul>
-		<li>Easy to setup for most cases</li>
-		<li>Mouse and keyboard selection (up/down, escape, enter) possible</li>
-	</ul>
-	
-	<h3>Example to try (enter the first three letters of an English	countryname)</h3>	
+	<h3>Example Form - look at the sourcecode</h3>
 
 	<form>
 		<p>
@@ -69,22 +49,9 @@ window.addEvent("domready", function() {
 			<input type="hidden" name="country_code1" id="country_code1" size="2" disabled="disabled" readonly="readonly" />
 		</p>
 	</form>
-		
-	<h3>Another example (selection is sent to different elements)</h3>
-
-		<form>
-			<p>
-				<label>Find a country:</label>
-				<input id="autoinput2" name="country2" size="25" class="ajaxsearch" type="text" />
-			</p>
-			<p>
-				<label>Your selection:</label>
-				<input type="text" name="country_sel2" id="country_sel2" size="20" disabled="disabled" readonly="readonly" />
-				<input type="text" name="country_code2" id="country_code2" size="2" disabled="disabled" readonly="readonly" />
-			</p>
-		</form>
-
 	
+	
+		
 	<p><small>Written by Mario Fischer 2009-2010, <a href="http://www.chipwreck.de/blog/">chipwreck.de &raquo;</a></small></p>
 </div>
 	
