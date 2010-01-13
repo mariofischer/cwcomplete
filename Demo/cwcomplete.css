@@ -1,0 +1,46 @@
+/* CSS file for CwComplete (a small mootools-autocompleter) */
+
+/* Outer div (positioned absolute below the input field */
+.cwCompleteOuter {
+	position: absolute;
+}
+
+/* UL inside the outer div */
+ul.cwCompleteChoices {
+	list-style: none;
+	list-style-position: inside;
+	margin: 0;
+	padding: 1px; /* ie6 trash workaround */
+	z-index: 999;
+	
+	width: 250px;
+	background: #2d2e2f;
+	opacity: 0.85;
+	-webkit-box-shadow: 2px 2px 7px #333; -moz-box-shadow: 2px 2px 7px #333;
+}
+
+/* LIs (choices) inside the UL */
+ul.cwCompleteChoices li {
+	display: block;
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px;
+	text-align: left;
+	color: #f1f2f3;
+	font-size: 11px;
+}
+
+/* Style for hovered (selected) LIs */
+ul.cwCompleteChoices li:hover,.cwCompleteChoicesHover {
+	text-decoration: underline;
+	background-color: #f257af;
+}
+
+/* Style for outer div while loading values */
+.cwCompleteLoading {
+	background: transparent url('ajax-loader-pipe.gif') no-repeat;
+	width: 112px;
+	height: 12px;
+	padding-bottom: 12px; /* ie6 trash workaround */
+}
+
