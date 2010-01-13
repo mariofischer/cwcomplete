@@ -30,15 +30,15 @@ CwAutocompleter Method: constructor {#CwAutocompleter:constructor}
 
 ### Options:
 
-* ajaxMethod - (**) either get (default) or post
-* ajaxParam - (**) name of the parameter which is sent to the ajax script (defaults to 'search')
-* inputMinLength - (**) number of characters entered after which the auto complete starts
-* targetfieldForKey - (**) optional, an element id into which the user selected key is written
-* targetfieldForValue - (**) optional, an element id into which the user selected value is written. Leave empty to use the input field therefore
-* suggestionBoxOuterClass - (**) css-classname, change if necessary
-* suggestionBoxListClass - (**) css-classname, change if necessary
-* suggestionBoxLoadingClass - (**) css-classname, change if necessary
-* suggestionBoxHoverClass - (**) css-classname, change if necessary
+* ajaxMethod - (*string*) either get (default) or post
+* ajaxParam - (*string*) name of the parameter which is sent to the ajax script (defaults to 'search')
+* inputMinLength - (*integer*) number of characters entered after which the auto complete starts
+* targetfieldForKey - (*string*) optional, an element id into which the user selected key is written
+* targetfieldForValue - (*string*) optional, an element id into which the user selected value is written. Leave empty to use the input field therefore
+* suggestionBoxOuterClass - (*string*) css-classname, change if necessary
+* suggestionBoxListClass - (*string*) css-classname, change if necessary
+* suggestionBoxLoadingClass - (*string*) css-classname, change if necessary
+* suggestionBoxHoverClass - (*string*) css-classname, change if necessary
 
 ### Events:
 
