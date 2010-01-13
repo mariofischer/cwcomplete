@@ -2,16 +2,17 @@ CwComplete
 ===========
 
 This is a small mootools automcompletion tool.
+(In progress...)
 ..
 
 ![Screenshot](http://www.chipwreck.de/blog/wp-content/uploads/2010/01/Demo-CwComplete.png)
 
 ### Demo
 
-[http://www.chipwreck.de/blog/software/cwcrop/cwcrop-demo/](http://www.chipwreck.de/blog/software/cwcomplete/demo/)
+[http://www.chipwreck.de/blog/software/cwcomplete/demo/](http://www.chipwreck.de/blog/software/cwcomplete/demo/)
 
 ### Docs
-[http://www.chipwreck.de/blog/software/cwcrop/help/](http://www.chipwreck.de/blog/software/cwcomplete/help/)
+[http://www.chipwreck.de/blog/software/cwcomplete/help/](http://www.chipwreck.de/blog/software/cwcomplete/help/)
 
 How to use
 ----------
@@ -23,5 +24,5 @@ How to use
 	
 ### More Information
 
-See [http://www.chipwreck.de/blog/software/cwcrop/help/](http://www.chipwreck.de/blog/software/cwcomplete/) for more information.
+See [http://www.chipwreck.de/blog/software/cwcomplete/help/](http://www.chipwreck.de/blog/software/cwcomplete/) for more information.
 	
