@@ -13,9 +13,7 @@ requires:
 
 provides:
   - CwComplete
-  
-version:
-	0.3
+ 
 ...
 */
 var CwAutocompleter = new Class({
