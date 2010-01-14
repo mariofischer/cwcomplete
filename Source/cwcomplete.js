@@ -33,7 +33,8 @@ var CwAutocompleter = new Class({
 		suggestionBoxLoadingClass: 'cwCompleteLoading', // rename css classes here if necessary
 		suggestionBoxHoverClass: 'cwCompleteChoicesHover', // rename css classes here if necessary
 
-		onChoose: $empty // function to execute if the user chose an item
+		onChoose: $empty, // function to execute if the user chose an item
+/*   	doRetrieveValues: function(input) { return [['a','b'], ['c','d']]; }  */
 	},
 
 	// initialization : css class of the input field, url for ajax query, options
@@ -41,7 +42,7 @@ var CwAutocompleter = new Class({
 	{
 		// prepare options
 		this.setOptions(options);
-		if (!$(inputfield) || !url) { return; }
+		if (!$(inputfield)) { return; }
 		
 		this.prevlength = 0;
 		this.textfield = $(inputfield);
@@ -67,20 +68,27 @@ var CwAutocompleter = new Class({
 		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this) } );
 		
 		// prepare ajax
-		this.ajax = new Request({
-			url: this.url,
-			method: this.options.ajaxMethod});
-		this.ajax.addEvent('onComplete', this.ajaxComplete.bind(this));
+		if (this.url) {
+			this.ajax = new Request({
+				url: this.url,
+				method: this.options.ajaxMethod});
+			this.ajax.addEvent('onComplete', this.ajaxComplete.bind(this));
+		}
 	},
 	
 	// Retrieve values given the textfield input and show "loading..."
 	getValues: function(input)
 	{
-		this.choices.hide();
-		this.container.addClass(this.options.suggestionBoxLoadingClass);
-		this.container.show();
-		
-		this.ajax.send(this.options.ajaxParam+"="+input);
+		if ($defined(this.options.doRetrieveValues)) {
+			this.setValues(this.options.doRetrieveValues.run(input));
+		}
+		else if (this.ajax) {
+			this.choices.hide();
+			this.container.addClass(this.options.suggestionBoxLoadingClass);
+			this.container.show();
+			
+			this.ajax.send(this.options.ajaxParam+"="+input);
+		}
 	},
 	
 	// Ajax oncomplete, eval response and fill dropdown, remove "loading"-classes
@@ -93,21 +101,32 @@ var CwAutocompleter = new Class({
 			this.clearChoices();
 		}
 		else {
-		 	this.values = myvalue;
-		 	this.clearChoices();
-			this.values.each( function(avalue, i) {
-				if (avalue) {
-					this.lielems[i] = new Element('li', { 'html': avalue[1] });
-					this.lielems[i].addEvent('click', this.enterValue.bindWithEvent(this, {id: avalue[0], value: avalue[1] }));
-					this.lielems[i].injectInside(this.choices);
-				}
-			}.bind(this));
-			
-			this.container.show();	
-			this.container.removeClass(this.options.suggestionBoxLoadingClass);
-			this.choices.show();
-			this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
+			this.setValues(myvalue);
 		}
+	},
+	
+	onSetValues: function(values)
+	{
+		console.log("recv");
+		this.setValues(values);
+	},
+	
+	setValues: function(values)
+	{
+		this.values = values;
+		this.clearChoices();
+		this.values.each( function(avalue, i) {
+			if (avalue) {
+				this.lielems[i] = new Element('li', { 'html': avalue[1] });
+				this.lielems[i].addEvent('click', this.enterValue.bindWithEvent(this, {id: avalue[0], value: avalue[1] }));
+				this.lielems[i].injectInside(this.choices);
+			}
+		}.bind(this));
+		
+		this.container.show();	
+		this.container.removeClass(this.options.suggestionBoxLoadingClass);
+		this.choices.show();
+		this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
 	},
 	
 	// Clear list of choices

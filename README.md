@@ -2,7 +2,8 @@ CwComplete
 ===========
 
 This is a small mootools automcompletion tool.
-..
+
+Takes an input field, an URL called via Ajax.
 
 ![Screenshot](http://www.chipwreck.de/blog/wp-content/uploads/2010/01/Demo-CwComplete.png)
 
@@ -22,5 +23,6 @@ How to use
 
 ### More Information / Help
 
-See [http://www.chipwreck.de/blog/software/cwcomplete/help/](http://www.chipwreck.de/blog/software/cwcomplete/) for more information.
+See
+[http://www.chipwreck.de/blog/software/cwcomplete/help/](http://www.chipwreck.de/blog/software/cwcomplete/help/) for more information.
 	

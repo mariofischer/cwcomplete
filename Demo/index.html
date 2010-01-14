@@ -17,12 +17,15 @@
 var ac;
 window.addEvent("domready", function() {
 
-	ac1 = new CwAutocompleter( 'autoinput1' /* The ID of the input field */ , 'http://URL-GOES-HERE!', /* The URL of your backend ajax script */
+	ac1 = new CwAutocompleter( 'autoinput1' /* The ID of the input field */ , 'http://www.chipwreck.de/cwcrop/ac-ajax.php', /* The URL of your backend ajax script */
 		{
 			targetfieldForKey: 'country_code1', /* The ID of the field where the selected key goes */
 			onChoose: function(selection) {
  				alert("You selected: " + selection.value + " (" + selection.key + ")");  /* Optional function to execute on user selection */
-			}
+			},
+			doRetrieveValues: function(input) {
+				return [['1','example'], ['2','something else']];
+			} 			
 		}
 	);
 
@@ -50,8 +53,6 @@ window.addEvent("domready", function() {
 		</p>
 	</form>
 	
-	
-		
 	<p><small>Written by Mario Fischer 2009-2010, <a href="http://www.chipwreck.de/blog/">chipwreck.de &raquo;</a></small></p>
 </div>
 	
