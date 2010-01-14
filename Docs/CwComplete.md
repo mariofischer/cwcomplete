@@ -50,6 +50,9 @@ CwAutocompleter Method: constructor {#CwAutocompleter:constructor}
 
 
 
+
+
+
 CwAutocompleter Method: getValues {#CwAutocompleter:getValues}
 ---------------------------------------------------------------
 
@@ -81,6 +84,19 @@ CwAutocompleter Method: ajaxComplete {#CwAutocompleter:ajaxComplete}
 
 
 
+CwAutocompleter Method: setValues {#CwAutocompleter:setValues}
+---------------------------------------------------------------
+
+
+### Syntax:
+
+
+
+### Arguments:
+
+1. values - (**)
+
+
 CwAutocompleter Method: clearChoices {#CwAutocompleter:clearChoices}
 ---------------------------------------------------------------------
 
@@ -89,7 +105,7 @@ CwAutocompleter Method: clearChoices {#CwAutocompleter:clearChoices}
 
 
 
-### Arguments:I
+### Arguments:
 
 1. obj - (**)
 

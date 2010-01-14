@@ -17,7 +17,7 @@
 var ac;
 window.addEvent("domready", function() {
 
-	ac1 = new CwAutocompleter( 'autoinput' /* The ID of the input field */ , 'http://', /* The URL of your backend ajax script */
+	ac1 = new CwAutocompleter( 'autoinput' /* The ID of the input field */ , 'http://www.chipwreck.de/cwcrop/ac-ajax.php', /* The URL of your backend ajax script */
 		{
 			targetfieldForKey: 'country_code', /* The ID of the field where the selected key goes */
 			onChoose: function(selection) {
@@ -25,7 +25,7 @@ window.addEvent("domready", function() {
 			},
 			doRetrieveValues: function(input) {
 				return [['1','example'], ['2','something else']]; /* You can provide your own function to retrieve completions, the URL is then ignored */
-			} 			
+			}
 		}
 	);
 

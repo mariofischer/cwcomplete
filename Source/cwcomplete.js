@@ -33,8 +33,9 @@ var CwAutocompleter = new Class({
 		suggestionBoxLoadingClass: 'cwCompleteLoading', // rename css classes here if necessary
 		suggestionBoxHoverClass: 'cwCompleteChoicesHover', // rename css classes here if necessary
 
-		onChoose: $empty, // function to execute if the user chose an item
-/*   	doRetrieveValues: function(input) { return [['a','b'], ['c','d']]; }  */
+/*   	doRetrieveValues: function(input) { return [['a','b'], ['c','d']]; },  */
+		onChoose: $empty // function to execute if the user chose an item
+
 	},
 
 	// initialization : css class of the input field, url for ajax query, options
@@ -103,12 +104,6 @@ var CwAutocompleter = new Class({
 		else {
 			this.setValues(myvalue);
 		}
-	},
-	
-	onSetValues: function(values)
-	{
-		console.log("recv");
-		this.setValues(values);
 	},
 	
 	setValues: function(values)
