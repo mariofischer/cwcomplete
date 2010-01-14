@@ -33,7 +33,7 @@ var CwAutocompleter = new Class({
 		suggestionBoxLoadingClass: 'cwCompleteLoading', // rename css classes here if necessary
 		suggestionBoxHoverClass: 'cwCompleteChoicesHover', // rename css classes here if necessary
 
-/*   	doRetrieveValues: function(input) { return [['a','b'], ['c','d']]; },  */
+/*   	doRetrieveValues: function(input) { return [['1','example'], ['2','something else']]; }, // optional method to provide the values, the url is ignored then */
 		onChoose: $empty // function to execute if the user chose an item
 
 	},
