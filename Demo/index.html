@@ -17,14 +17,14 @@
 var ac;
 window.addEvent("domready", function() {
 
-	ac1 = new CwAutocompleter( 'autoinput1' /* The ID of the input field */ , 'http://www.chipwreck.de/cwcrop/ac-ajax.php', /* The URL of your backend ajax script */
+	ac1 = new CwAutocompleter( 'autoinput' /* The ID of the input field */ , 'http://', /* The URL of your backend ajax script */
 		{
-			targetfieldForKey: 'country_code1', /* The ID of the field where the selected key goes */
+			targetfieldForKey: 'country_code', /* The ID of the field where the selected key goes */
 			onChoose: function(selection) {
  				alert("You selected: " + selection.value + " (" + selection.key + ")");  /* Optional function to execute on user selection */
 			},
 			doRetrieveValues: function(input) {
-				return [['1','example'], ['2','something else']];
+				return [['1','example'], ['2','something else']]; /* You can provide your own function to retrieve completions, the URL is then ignored */
 			} 			
 		}
 	);
@@ -48,8 +48,8 @@ window.addEvent("domready", function() {
 	<form>
 		<p>
 			<label>Find a country:</label>
-			<input id="autoinput1" name="country1" size="25" class="ajaxsearch" type="text" />
-			<input type="hidden" name="country_code1" id="country_code1" size="2" disabled="disabled" readonly="readonly" />
+			<input id="autoinput" name="country" size="25" class="ajaxsearch" type="text" />
+			<input type="hidden" name="country_code" id="country_code" size="2" disabled="disabled" readonly="readonly" />
 		</p>
 	</form>
 	
