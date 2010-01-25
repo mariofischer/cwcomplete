@@ -3,7 +3,8 @@ CwComplete
 
 This is a small mootools automcompletion tool.
 
-Takes an input field, an URL called via Ajax.
+Takes an input field, an URL called via Ajax - or a javascript function to provide the completion
+values.
 
 ![Screenshot](http://www.chipwreck.de/blog/wp-content/uploads/2010/01/Demo-CwComplete.png)
 
