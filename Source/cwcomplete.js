@@ -67,6 +67,7 @@ var CwAutocompleter = new Class({
 		// attach events		
 		this.textfield.setProperty('autocomplete', 'off');
 		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this), 'blur': this.clearChoices.bind(this) } );
+		this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } )
 		
 		// prepare ajax
 		if (this.url) {
