@@ -10,6 +10,7 @@ license:
 
 requires:
   core/1.2.3: '*'
+  more/1.2.3: 'Element.Shortcuts'
 
 provides:
   - CwComplete
