@@ -68,7 +68,9 @@ var CwAutocompleter = new Class({
 		// attach events		
 		this.textfield.setProperty('autocomplete', 'off');
 		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this), 'blur': this.clearChoices.bind(this) } );
-		this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } )
+		if (!Browser.Engine.trident) {
+			this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } )
+		}
 		
 		// prepare ajax
 		if (this.url) {
@@ -116,6 +118,9 @@ var CwAutocompleter = new Class({
 			if (avalue) {
 				this.lielems[i] = new Element('li', { 'html': avalue[1] });
 				this.lielems[i].addEvent('click', this.enterValue.bindWithEvent(this, {id: avalue[0], value: avalue[1] }));
+				if (Browser.Engine.trident) {
+					this.lielems[i].addEvent('mousedown', this.enterValue.bindWithEvent(this, {id: avalue[0], value: avalue[1] }));
+				}
 				this.lielems[i].injectInside(this.choices);
 			}
 		}.bind(this));
