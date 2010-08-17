@@ -20,7 +20,7 @@ How to use
 
 ### Requires
 
-* [MooTools Core 1.2.3](http://mootools.net/core)
+* [MooTools Core 1.2.4](http://mootools.net/core)
 * [MooTools More: Element.Shortcuts](http://mootools.net/more)
 
 ### More Information / Help

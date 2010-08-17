@@ -143,10 +143,10 @@ var CwAutocompleter = new Class({
 	// Enter value from selection into text-field and fire onChoose-event
 	enterValue: function(obj, selected)
 	{
-		if ($(this.options.targetfieldForKey)) {
+		if (this.options.targetfieldForKey && $(this.options.targetfieldForKey)) {
 			$(this.options.targetfieldForKey).value = selected['id'];
 		}
-		if ($(this.options.targetfieldForValue)) {
+		if (this.options.targetfieldForValue && $(this.options.targetfieldForValue)) {
 			$(this.options.targetfieldForValue).value = selected['value'];
 		}
 		else {
