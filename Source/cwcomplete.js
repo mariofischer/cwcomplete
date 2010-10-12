@@ -35,9 +35,23 @@ var CwAutocompleter = new Class({
 		suggestionBoxHoverClass: 'cwCompleteChoicesHover', // rename css classes here if necessary
 
 /*   	doRetrieveValues: function(input) { return [['1','example'], ['2','something else']]; }, // optional method to provide the values, the url is ignored then */
-		onChoose: $empty // function to execute if the user chose an item
+		onChoose: function() {} // function to execute if the user chose an item
 
 	},
+	
+	clearFields: function(obj) {
+		if ($(this.options.targetfieldForKey)) {
+				$(this.options.targetfieldForKey).value = '';
+		}
+		
+		if ($(this.options.targetfieldForValue)) {
+			$(this.options.targetfieldForValue).value = '';
+		}
+		else {
+			this.textfield.value = '';
+		}
+	},
+
 
 	// initialization : css class of the input field, url for ajax query, options
 	initialize: function(inputfield, url, options)
@@ -67,8 +81,8 @@ var CwAutocompleter = new Class({
 		
 		// attach events		
 		this.textfield.setProperty('autocomplete', 'off');
-		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this), 'blur': this.clearChoices.bind(this) } );
-		if (!Browser.Engine.trident) {
+		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this), 'blur': this.clearChoices.bind(this), 'focus': this.clearFields.bind(this) } );
+		if (!Browser.ie) {
 			this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } )
 		}
 		
@@ -84,8 +98,8 @@ var CwAutocompleter = new Class({
 	// Retrieve values given the textfield input and show "loading..."
 	getValues: function(input)
 	{
-		if ($defined(this.options.doRetrieveValues)) {
-			this.setValues(this.options.doRetrieveValues.run(input));
+		if (this.options.doRetrieveValues != null) {
+			this.setValues(this.options.doRetrieveValues.apply(input));
 		}
 		else if (this.ajax) {
 			this.choices.hide();
@@ -117,11 +131,15 @@ var CwAutocompleter = new Class({
 		this.values.each( function(avalue, i) {
 			if (avalue) {
 				this.lielems[i] = new Element('li', { 'html': avalue[1] });
-				this.lielems[i].addEvent('click', this.enterValue.bindWithEvent(this, {id: avalue[0], value: avalue[1] }));
-				if (Browser.Engine.trident) {
-					this.lielems[i].addEvent('mousedown', this.enterValue.bindWithEvent(this, {id: avalue[0], value: avalue[1] }));
+				this.lielems[i].addEvent('click',
+					this.enterValue.bind(this, {id: avalue[0], value: avalue[1] })
+				);
+				if (Browser.ie) {
+					this.lielems[i].addEvent('mousedown',
+						this.enterValue.bind(this, {id: avalue[0], value: avalue[1] })
+					);
 				}
-				this.lielems[i].injectInside(this.choices);
+				this.lielems[i].inject(this.choices, 'inside');
 			}
 		}.bind(this));
 		
@@ -141,7 +159,7 @@ var CwAutocompleter = new Class({
 	},
 	
 	// Enter value from selection into text-field and fire onChoose-event
-	enterValue: function(obj, selected)
+	enterValue: function(selected)
 	{
 		if (this.options.targetfieldForKey && $(this.options.targetfieldForKey)) {
 			$(this.options.targetfieldForKey).value = selected['id'];

@@ -6,8 +6,8 @@
 	<meta name="author" content="Mario Fischer" />
 	<link rel="stylesheet" type="text/css" href="cw-demo.css" media="all" />
 	<link rel="stylesheet" type="text/css" href="cwcomplete.css" media="all" />
-	<script type="text/javascript" src="mootools-1.2.4-core-nc.js"></script>
-	<script type="text/javascript" src="mootools-1.2.4.2-more-nc.js"></script>
+	<script type="text/javascript" src="mootools-core-1.3-full-nocompat-yc.js"></script>
+	<script type="text/javascript" src="mootools-more-1.3-yc.js"></script>
 	<script type="text/javascript" src="../Source/cwcomplete.js"></script>
 	<title>Chipwreck | Javascript CwComplete Example Page</title>
 </head>
@@ -17,7 +17,7 @@
 var ac;
 window.addEvent("domready", function() {
 
-	ac = new CwAutocompleter( 'autoinput' /* The ID of the input field */ , 'http://www.chipwreck.de/cwcrop/ac-ajax.php', /* The URL of your backend ajax script */
+	ac = new CwAutocompleter( 'autoinput' /* The ID of the input field */ , 'http://www.yourhost.de/example/ajax.php', /* The URL of your backend ajax script */
 		{
 			targetfieldForKey: 'country_code', /* The ID of the field where the selected key goes */
 			onChoose: function(selection) {
@@ -25,6 +25,7 @@ window.addEvent("domready", function() {
 			},
 			doRetrieveValues: function(input) {
 				return [['1','example'], ['2','something else']]; /* You can provide your own function to retrieve completions, the URL is then ignored */
+
 			}
 		}
 	);
@@ -48,7 +49,7 @@ window.addEvent("domready", function() {
 	<form>
 		<p>
 			<label>Find a country:</label>
-			<input id="autoinput" name="country" size="25" class="ajaxsearch" type="text" />
+			<input id="autoinput" name="country" size="25" class="ajaxsearch" type="text" onclick="console.log($('country_code').value)" />
 			<input type="hidden" name="country_code" id="country_code" size="2" disabled="disabled" readonly="readonly" />
 		</p>
 	</form>
