@@ -39,6 +39,13 @@ CwAutocompleter Method: constructor {#CwAutocompleter:constructor}
 * suggestionBoxListClass - (*string*) css-classname, change if necessary
 * suggestionBoxLoadingClass - (*string*) css-classname, change if necessary
 * suggestionBoxHoverClass - (*string*) css-classname, change if necessary
+* clearChoicesOnBlur - (*boolean*) whether to clear choices when the choises container loses focus
+* clearChoicesOnEsc - (*boolean*) whether to clear choices when the choises container loses focus
+* clearChoicesOnChoose - (*boolean*) whether to clear choices when a value is chosen
+* setValuesOnChoose - (*boolean*) whether to set values when a choice is selected
+* suggestionContainer - (*string*) an exiting element to contain the suggestions (may be empty)
+* choiceContainer - (*string*) the element used to encapsulate all choices, UL by default
+* choiceElement - (*string*) the element used to encapsulate the actual choice text, LI by default
 
 ### Events:
 

@@ -9,8 +9,8 @@ license:
   - MIT-style license
 
 requires:
-  core/1.2.3: '*'
-  more/1.2.3: 'Element.Shortcuts'
+  core/1.3: '*'
+  more/1.3: 'Element.Shortcuts'
 
 provides:
   - CwComplete
@@ -34,11 +34,21 @@ var CwAutocompleter = new Class({
 		suggestionBoxLoadingClass: 'cwCompleteLoading', // rename css classes here if necessary
 		suggestionBoxHoverClass: 'cwCompleteChoicesHover', // rename css classes here if necessary
 
+		clearChoicesOnBlur: true, // whether to clear choices when the container loses focus
+		clearChoicesOnEsc: true, // whether to clear choices when the container loses focus
+		clearChoicesOnChoose: true, // whether to clear choices when a value is chosen
+		setValuesOnChoose: true, // whether to set values when a choice is selected
+
+		suggestionContainer: {}, // an existing element to contain the suggestions
+		choiceContainer: 'ul', // the element used to encapsulate all choices
+		choiceElement: 'li', // the element used to encapsulate the actual choice text
+
 /*   	doRetrieveValues: function(input) { return [['1','example'], ['2','something else']]; }, // optional method to provide the values, the url is ignored then */
 		onChoose: function() {} // function to execute if the user chose an item
 
 	},
 	
+/*
 	clearFields: function(obj) {
 		if ($(this.options.targetfieldForKey)) {
 				$(this.options.targetfieldForKey).value = '';
@@ -51,7 +61,7 @@ var CwAutocompleter = new Class({
 			this.textfield.value = '';
 		}
 	},
-
+*/
 
 	// initialization : css class of the input field, url for ajax query, options
 	initialize: function(inputfield, url, options)
@@ -69,19 +79,28 @@ var CwAutocompleter = new Class({
 		var myleft = this.textfield.getPosition().x;
 		var mytop = this.textfield.getPosition().y + this.textfield.getSize().y;
 
+		if (this.options.suggestionContainer && $(this.options.suggestionContainer)) {
+			this.container = $(this.options.suggestionContainer);
+			this.container.addClass(this.options.suggestionBoxOuterClass);
+		} else {
 		this.container = new Element('div', {
 			'class': this.options.suggestionBoxOuterClass,
 			'styles': { 'width': mywidth, 'left': myleft, 'top': mytop, 'height': 0 }
 		}).inject($(document.body));
+		}
 
-		this.choices = new Element('ul', {
+		this.choices = new Element(this.options.choiceContainer, {
 			'class': this.options.suggestionBoxListClass
 		}).inject($(this.container), 'inside');
 		this.clearChoices();
 		
 		// attach events		
 		this.textfield.setProperty('autocomplete', 'off');
-		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this), 'blur': this.clearChoices.bind(this), 'focus': this.clearFields.bind(this) } );
+		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this)} );
+		if (this.options.clearChoicesOnBlur) {
+			this.textfield.addEvents( {'blur': this.clearChoices.bind(this) } );
+		}
+
 		if (!Browser.ie) {
 			this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } )
 		}
@@ -130,14 +149,10 @@ var CwAutocompleter = new Class({
 		this.clearChoices();
 		this.values.each( function(avalue, i) {
 			if (avalue) {
-				this.lielems[i] = new Element('li', { 'html': avalue[1] });
-				this.lielems[i].addEvent('click',
-					this.enterValue.bind(this, {id: avalue[0], value: avalue[1] })
-				);
+				this.lielems[i] = new Element(this.options.choiceElement, { 'html': avalue[1] });
+				this.lielems[i].addEvent('click',this.enterValue.bind(this, {id: avalue[0], value: avalue[1] })	);
 				if (Browser.ie) {
-					this.lielems[i].addEvent('mousedown',
-						this.enterValue.bind(this, {id: avalue[0], value: avalue[1] })
-					);
+					this.lielems[i].addEvent('mousedown',this.enterValue.bind(this, {id: avalue[0], value: avalue[1] }));
 				}
 				this.lielems[i].inject(this.choices, 'inside');
 			}
@@ -161,18 +176,23 @@ var CwAutocompleter = new Class({
 	// Enter value from selection into text-field and fire onChoose-event
 	enterValue: function(selected)
 	{
-		if (this.options.targetfieldForKey && $(this.options.targetfieldForKey)) {
-			$(this.options.targetfieldForKey).value = selected['id'];
-		}
-		if (this.options.targetfieldForValue && $(this.options.targetfieldForValue)) {
-			$(this.options.targetfieldForValue).value = selected['value'];
-		}
-		else {
-			this.textfield.value = selected['value'];
+		if (this.options.setValuesOnChoose) {
+			if (this.options.targetfieldForKey && $(this.options.targetfieldForKey)) {
+				$(this.options.targetfieldForKey).value = selected['id'];
+			}
+			if (this.options.targetfieldForValue && $(this.options.targetfieldForValue)) {
+				$(this.options.targetfieldForValue).value = selected['value'];
+			}
+			else {
+				this.textfield.value = selected['value'];
+			}
 		}
 		
 		this.fireEvent('onChoose', {'key': selected['id'], 'value': selected['value']});
-		this.clearChoices();		
+
+		if (this.options.clearChoicesOnChoose) {
+			this.clearChoices();		
+		}
 	},
 	
 	moveUp: function(el, event)
@@ -215,7 +235,9 @@ var CwAutocompleter = new Class({
 						event.preventDefault();
 						break;
 					case 'esc':
-						this.clearChoices();
+						if (this.options.clearChoicesOnEsc) {
+							this.clearChoices();
+						}
 						break;
 					default:
 						var text = myevent.target.value;
