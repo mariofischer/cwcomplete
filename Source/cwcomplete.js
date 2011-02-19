@@ -43,26 +43,11 @@ var CwAutocompleter = new Class({
 		choiceContainer: 'ul', // the element used to encapsulate all choices
 		choiceElement: 'li', // the element used to encapsulate the actual choice text
 
-/*   	doRetrieveValues: function(input) { return [['1','example'], ['2','something else']]; }, // optional method to provide the values, the url is ignored then */
+/*      doRetrieveValues: function(input) { return [['1','example'], ['2','something else']]; }, // optional method to provide the values, the url is ignored then */
 		onChoose: function() {} // function to execute if the user chose an item
 
 	},
 	
-/*
-	clearFields: function(obj) {
-		if ($(this.options.targetfieldForKey)) {
-				$(this.options.targetfieldForKey).value = '';
-		}
-		
-		if ($(this.options.targetfieldForValue)) {
-			$(this.options.targetfieldForValue).value = '';
-		}
-		else {
-			this.textfield.value = '';
-		}
-	},
-*/
-
 	// initialization : css class of the input field, url for ajax query, options
 	initialize: function(inputfield, url, options)
 	{
@@ -73,6 +58,7 @@ var CwAutocompleter = new Class({
 		this.prevlength = 0;
 		this.textfield = $(inputfield);
 		this.url = url;
+		this.clickeddoc = false;
 		
 		// build elements
 		var mywidth = this.textfield.getStyle('width');
@@ -98,11 +84,17 @@ var CwAutocompleter = new Class({
 		this.textfield.setProperty('autocomplete', 'off');
 		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this)} );
 		if (this.options.clearChoicesOnBlur) {
-			this.textfield.addEvents( {'blur': this.clearChoices.bind(this) } );
+			if (!Browser.ie) {
+				this.textfield.addEvents( {'blur': this.clearChoices.bind(this) } );
+			}
+			else {
+				document.addEvent('click', this.docclick.bind(this));
+				this.textfield.addEvents( {'blur': this.blurLater.bind(this) } );
+			}
 		}
 
 		if (!Browser.ie) {
-			this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } )
+			this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } );
 		}
 		
 		// prepare ajax
@@ -132,7 +124,7 @@ var CwAutocompleter = new Class({
 	// Ajax oncomplete, eval response and fill dropdown, remove "loading"-classes
 	ajaxComplete: function(input)
 	{
-		if (!input) return;
+		if (!input) { return; }
 		var myvalue = JSON.decode(input, true);
 
 		if (myvalue === false || !myvalue.length) {
@@ -258,5 +250,30 @@ var CwAutocompleter = new Class({
 				this.prevlength = myevent.target.value.length; // any other keydown
 			}
 		}
-	}
+	},
+	
+	// IE6/7 workaround...
+	docclick: function(event)
+	{
+		if (this.textfield.id !== event.target.id) {
+	        this.clickeddoc = true;
+		}
+    },
+
+	// IE6/7 workaround...    
+    blurLater: function(event)
+    {
+		var that = this;
+		var callback = function()
+		{
+			if (that.clickeddoc) {
+				that.clickeddoc = false;
+				that.clearChoices(event);
+			}
+			else {
+          		that.textfield.focus();
+        	}
+		};
+		setTimeout(callback, 200);
+    }
 });
