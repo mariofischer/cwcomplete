@@ -9,7 +9,6 @@ values.
 ![Screenshot](http://www.chipwreck.de/blog/wp-content/uploads/2010/01/Demo-CwComplete.png)
 
 ### Demo
-
 [http://www.chipwreck.de/blog/software/cwcomplete/demo/](http://www.chipwreck.de/blog/software/cwcomplete/demo/)
 
 ### Docs

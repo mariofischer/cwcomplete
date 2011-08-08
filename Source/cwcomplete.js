@@ -25,7 +25,7 @@ var CwAutocompleter = new Class({
 		ajaxMethod: 'get', // use get or post for the request?
 		ajaxParam: 'search', // name of parameter for the request (..url.php?search=..)
 		inputMinLength: 3, // number of characters at which the auto completion starts
-		pause: 1000, // number of ms before autocomplete starts (set to 0 for immediately)
+		pause: 0, // number of ms before autocomplete starts (set to 0 for immediately)
 
 		targetfieldForKey: '', // if set, the user selected key will be written to this field as value (usually a hidden field)
 		targetfieldForValue: '', // if set, the user selected item will be written to this field as value (usually a text field)
@@ -110,33 +110,34 @@ var CwAutocompleter = new Class({
 	// Retrieve values given the textfield input and show "loading..."
 	getValues: function(input)
 	{
-		self = this;
 		var t_input = input;
 
 		if (this.options.doRetrieveValues != null) {
 			this.setValues(this.options.doRetrieveValues.apply(input));
 		}
 		else if (this.ajax) {
-			this.choices.hide();
-			this.container.addClass(this.options.suggestionBoxLoadingClass);
-			this.container.show();
 
 			if (this.options.pause === 0) {
-				self.ajax.send(self.options.ajaxParam+"="+t_input);
+				this.choices.hide();
+				this.container.addClass(this.options.suggestionBoxLoadingClass);
+				this.container.show();
+				this.ajax.send(this.options.ajaxParam+"="+t_input);
 			}
 			else {
+				var myself = this;
 				// dont spam the lookup script wait to see if typing has stopped
 				window.setTimeout(
 				   function() {
-						if ( t_input == self.textfield.get('value') ) {
-						   self.ajax.send(self.options.ajaxParam+"="+t_input);
+						if ( t_input == myself.textfield.get('value') ) {
+							myself.choices.hide();
+							myself.container.addClass(myself.options.suggestionBoxLoadingClass);
+							myself.container.show();
+						   	myself.ajax.send(myself.options.ajaxParam+"="+t_input);
 					   } else {
-						   self.ajax.cancel();
+						   myself.ajax.cancel();
 					   }
-				   }, self.options.pause);
+				   }, myself.options.pause);
 			}
-
-
 		}
 	},
 

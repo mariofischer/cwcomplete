@@ -33,6 +33,7 @@ CwAutocompleter Method: constructor {#CwAutocompleter:constructor}
 * ajaxMethod - (*string*) either get (default) or post
 * ajaxParam - (*string*) name of the parameter which is sent to the ajax script (defaults to 'search')
 * inputMinLength - (*integer*) number of characters entered after which the auto complete starts
+* pause - (*integer*) milliseconds to wait before autocomplete (via ajax) starts. 0 = immediately
 * targetfieldForKey - (*string*) optional, an element id into which the user selected key is written
 * targetfieldForValue - (*string*) optional, an element id into which the user selected value is written. Leave empty to use the input field therefore
 * suggestionBoxOuterClass - (*string*) css-classname, change if necessary
