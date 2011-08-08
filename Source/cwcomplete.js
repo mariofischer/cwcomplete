@@ -14,21 +14,22 @@ requires:
 
 provides:
   - CwComplete
- 
+
 ...
 */
 var CwAutocompleter = new Class({
 
 	Implements: [Options,Events],
-	
-	options: {		
+
+	options: {
 		ajaxMethod: 'get', // use get or post for the request?
 		ajaxParam: 'search', // name of parameter for the request (..url.php?search=..)
 		inputMinLength: 3, // number of characters at which the auto completion starts
-		
+		pause: 1000, // number of ms before autocomplete starts (set to 0 for immediately)
+
 		targetfieldForKey: '', // if set, the user selected key will be written to this field as value (usually a hidden field)
 		targetfieldForValue: '', // if set, the user selected item will be written to this field as value (usually a text field)
-		
+
 		suggestionBoxOuterClass: 'cwCompleteOuter', // rename css classes here if necessary
 		suggestionBoxListClass: 'cwCompleteChoices', // rename css classes here if necessary
 		suggestionBoxLoadingClass: 'cwCompleteLoading', // rename css classes here if necessary
@@ -47,19 +48,19 @@ var CwAutocompleter = new Class({
 		onChoose: function() {} // function to execute if the user chose an item
 
 	},
-	
+
 	// initialization : css class of the input field, url for ajax query, options
 	initialize: function(inputfield, url, options)
 	{
 		// prepare options
 		this.setOptions(options);
 		if (!$(inputfield)) { return; }
-		
+
 		this.prevlength = 0;
 		this.textfield = $(inputfield);
 		this.url = url;
 		this.clickeddoc = false;
-		
+
 		// build elements
 		var mywidth = this.textfield.getStyle('width');
 		var myleft = this.textfield.getPosition().x;
@@ -79,8 +80,8 @@ var CwAutocompleter = new Class({
 			'class': this.options.suggestionBoxListClass
 		}).inject($(this.container), 'inside');
 		this.clearChoices();
-		
-		// attach events		
+
+		// attach events
 		this.textfield.setProperty('autocomplete', 'off');
 		this.textfield.addEvents( {'keydown': this.keypressed.bind(this), 'keyup': this.keypressed.bind(this)} );
 		if (this.options.clearChoicesOnBlur) {
@@ -96,7 +97,7 @@ var CwAutocompleter = new Class({
 		if (!Browser.ie) {
 			this.choices.addEvents( {'mousedown': function(e){e.preventDefault();} } );
 		}
-		
+
 		// prepare ajax
 		if (this.url) {
 			this.ajax = new Request({
@@ -105,10 +106,13 @@ var CwAutocompleter = new Class({
 			this.ajax.addEvent('onComplete', this.ajaxComplete.bind(this));
 		}
 	},
-	
+
 	// Retrieve values given the textfield input and show "loading..."
 	getValues: function(input)
 	{
+		self = this;
+		var t_input = input;
+
 		if (this.options.doRetrieveValues != null) {
 			this.setValues(this.options.doRetrieveValues.apply(input));
 		}
@@ -116,11 +120,26 @@ var CwAutocompleter = new Class({
 			this.choices.hide();
 			this.container.addClass(this.options.suggestionBoxLoadingClass);
 			this.container.show();
-			
-			this.ajax.send(this.options.ajaxParam+"="+input);
+
+			if (this.options.pause === 0) {
+				self.ajax.send(self.options.ajaxParam+"="+t_input);
+			}
+			else {
+				// dont spam the lookup script wait to see if typing has stopped
+				window.setTimeout(
+				   function() {
+						if ( t_input == self.textfield.get('value') ) {
+						   self.ajax.send(self.options.ajaxParam+"="+t_input);
+					   } else {
+						   self.ajax.cancel();
+					   }
+				   }, self.options.pause);
+			}
+
+
 		}
 	},
-	
+
 	// Ajax oncomplete, eval response and fill dropdown, remove "loading"-classes
 	ajaxComplete: function(input)
 	{
@@ -134,7 +153,7 @@ var CwAutocompleter = new Class({
 			this.setValues(myvalue);
 		}
 	},
-	
+
 	setValues: function(values)
 	{
 		this.values = values;
@@ -149,13 +168,13 @@ var CwAutocompleter = new Class({
 				this.lielems[i].inject(this.choices, 'inside');
 			}
 		}.bind(this));
-		
-		this.container.show();	
+
+		this.container.show();
 		this.container.removeClass(this.options.suggestionBoxLoadingClass);
 		this.choices.show();
 		this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
 	},
-	
+
 	// Clear list of choices
 	clearChoices: function(obj)
 	{
@@ -164,7 +183,7 @@ var CwAutocompleter = new Class({
 		this.choices.set('html', '');
 		this.container.hide();
 	},
-	
+
 	// Enter value from selection into text-field and fire onChoose-event
 	enterValue: function(selected)
 	{
@@ -179,28 +198,28 @@ var CwAutocompleter = new Class({
 				this.textfield.value = selected['value'];
 			}
 		}
-		
+
 		this.fireEvent('onChoose', {'key': selected['id'], 'value': selected['value']});
 
 		if (this.options.clearChoicesOnChoose) {
-			this.clearChoices();		
+			this.clearChoices();
 		}
 	},
-	
+
 	moveUp: function(el, event)
 	{
 		if (this.lielems[this.selected] && this.lielems[this.selected - 1]) {
 			this.lielems[this.selected].removeClass(this.options.suggestionBoxHoverClass);
-			this.selected = this.selected - 1;
+			this.selected -= 1;
 			this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
-		}		
+		}
 	},
-	
+
 	moveDown: function(el, event)
 	{
 		if (this.lielems[this.selected] && this.lielems[this.selected + 1]) {
 			this.lielems[this.selected].removeClass(this.options.suggestionBoxHoverClass);
-			this.selected = this.selected + 1;
+			this.selected += 1;
 			this.lielems[this.selected].addClass(this.options.suggestionBoxHoverClass);
 		}
 	},
@@ -223,7 +242,7 @@ var CwAutocompleter = new Class({
 						event.preventDefault();
 						break;
 					case 'up':
-						this.moveUp();	
+						this.moveUp();
 						event.preventDefault();
 						break;
 					case 'esc':
@@ -251,7 +270,7 @@ var CwAutocompleter = new Class({
 			}
 		}
 	},
-	
+
 	// IE6/7 workaround...
 	docclick: function(event)
 	{
@@ -260,7 +279,7 @@ var CwAutocompleter = new Class({
 		}
     },
 
-	// IE6/7 workaround...    
+	// IE6/7 workaround...
     blurLater: function(event)
     {
 		var that = this;
